@@ -46,16 +46,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['delete_user'])) {
     // print_r($_POST);
     // echo "</pre>";
     $user_name_to_delete = $_POST['name'];
+    echo ''. $user_name_to_delete .'';
 
     // Use prepared statement to delete user
     $stmt = $conn->prepare("DELETE FROM user WHERE name = ?");
     $stmt->bind_param("s", $user_name_to_delete);
-    $stmt->execute();
+    echo $stmt->execute();
     $stmt->close();
 
     // Redirect to refresh the page after deletion
-    header("Location: /webESE/Form_Handling.php");
-    exit();
+    // header("Location: /webESE/Form_Handling.php");
 }
 ?>
 
@@ -132,7 +132,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['delete_user'])) {
                 </tbody>
             </table>
         <?php endif; ?>
+        <?php
+    $allUserData = file_get_contents('user_data.txt');
+
+    echo '<h2>Content of File</h2>';
+    echo '<pre>', htmlspecialchars($allUserData), '</pre>';
+    ?>
     </div>
+   
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
