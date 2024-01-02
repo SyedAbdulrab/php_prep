@@ -9,6 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $name = trim($name);
     $age = trim($age);
 
+    
+
     echo ' <div
        class="alert alert-success alert-dismissible fade show"
        role="alert"
