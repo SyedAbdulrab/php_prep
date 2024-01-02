@@ -38,23 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && !isset($_POST['delete_user'])) {
     // we will close the db connection later as we want to display the users as well
     header("Location: /webESE/Form_Handling.php");
 
-    // Fetch users from the database
 
-
-
-    echo ' <div
-       class="alert alert-success alert-dismissible fade show"
-       role="alert"
-   >
-       <button
-           type="button"
-           class="btn-close"
-           data-bs-dismiss="alert"
-           aria-label="Close"
-       ></button>
-   
-       <strong>Your name is ' . $name . '</strong> and you are ' . $age . ' years old!
-   </div>';
 }
 
 if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['delete_user'])) {
