@@ -1,4 +1,18 @@
 <?php
+// Establish database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "eseprep"; // Update with your actual database name
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$result = $conn->query("SELECT * FROM user");
+
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     // adding the htmspecialchars prevents from HTML injection
@@ -10,17 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $age = trim($age);
 
 
-    // Establish database connection
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "eseprep"; // Update with your actual database name
 
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
 
     // Use prepared statements
     $stmt = $conn->prepare("INSERT INTO user (name, age) VALUES (?, ?)"); // Update with your actual table name
@@ -30,9 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 
     // we will close the db connection later as we want to display the users as well
-    
+
     // Fetch users from the database
-    $result = $conn->query("SELECT * FROM user");
 
 
 
@@ -88,35 +91,38 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 
 
-    </div>
-    </form>
 
-    <!-- Display users in a table -->
-    <h2>Users</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Age</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            // Display users
-            while ($row = $result->fetch_assoc()) {
-                echo '<tr>';
-                echo '<td>' . $row['id'] . '</td>';
-                echo '<td>' . $row['name'] . '</td>';
-                echo '<td>' . $row['age'] . '</td>';
-                echo '</tr>';
-            }
+        </form>
 
-            // Close the database connection
-            $conn->close();
-            ?>
-        </tbody>
-    </table>
+        <?php if ($result !== null) : // Check if $result is not null before trying to fetch data 
+        ?>
+            <!-- Display users in a table -->
+            <hr>
+            <h2 class="mt-4">Users</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+
+                        <th>Name</th>
+                        <th>Age</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Display users
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<tr>';
+                        echo '<td>' . $row['name'] . '</td>';
+                        echo '<td>' . $row['age'] . '</td>';
+                        echo '</tr>';
+                    }
+
+                    // Close the database connection
+                    $conn->close();
+                    ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
     </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
