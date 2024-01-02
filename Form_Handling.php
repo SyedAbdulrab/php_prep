@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 
 $result = $conn->query("SELECT * FROM user");
 
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
+if ($_SERVER['REQUEST_METHOD'] == "POST" && !isset($_POST['delete_user'])) {
 
     // adding the htmspecialchars prevents from HTML injection
     $name = htmlspecialchars($_POST["name"]);
@@ -32,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $stmt->execute();
     $stmt->close();
 
-
     // we will close the db connection later as we want to display the users as well
+    //header("Location: /webESE/Form_Handling.php");
 
     // Fetch users from the database
 
@@ -52,6 +52,23 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
    
        <strong>Your name is ' . $name . '</strong> and you are ' . $age . ' years old!
    </div>';
+}
+
+if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['delete_user'])) {
+    // echo "<pre>";
+    // print_r($_POST);
+    // echo "</pre>";
+    $user_name_to_delete = $_POST['name'];
+
+    // Use prepared statement to delete user
+    $stmt = $conn->prepare("DELETE FROM user WHERE name = ?");
+    $stmt->bind_param("s", $user_name_to_delete);
+    $stmt->execute();
+    $stmt->close();
+
+    // Redirect to refresh the page after deletion
+    header("Location: /webESE/Form_Handling.php");
+    exit();
 }
 ?>
 
@@ -114,6 +131,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         echo '<tr>';
                         echo '<td>' . $row['name'] . '</td>';
                         echo '<td>' . $row['age'] . '</td>';
+                        echo '<td>
+                        <form method="post" action="/webESE/Form_Handling.php">
+                            <input type="hidden" name="name" value="' . $row['name'] . '">
+                            <button type="submit" name="delete_user" class="btn btn-danger">Delete</button>
+                        </form>';
                         echo '</tr>';
                     }
 
