@@ -9,7 +9,32 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $name = trim($name);
     $age = trim($age);
 
+
+    // Establish database connection
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "eseprep"; // Update with your actual database name
+
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Use prepared statements
+    $stmt = $conn->prepare("INSERT INTO user (name, age) VALUES (?, ?)"); // Update with your actual table name
+    $stmt->bind_param("ss", $name, $age);
+    $stmt->execute();
+    $stmt->close();
+
+
+    // we will close the db connection later as we want to display the users as well
     
+    // Fetch users from the database
+    $result = $conn->query("SELECT * FROM user");
+
+
 
     echo ' <div
        class="alert alert-success alert-dismissible fade show"
@@ -62,8 +87,37 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             </div>
 
 
+
     </div>
     </form>
+
+    <!-- Display users in a table -->
+    <h2>Users</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            // Display users
+            while ($row = $result->fetch_assoc()) {
+                echo '<tr>';
+                echo '<td>' . $row['id'] . '</td>';
+                echo '<td>' . $row['name'] . '</td>';
+                echo '<td>' . $row['age'] . '</td>';
+                echo '</tr>';
+            }
+
+            // Close the database connection
+            $conn->close();
+            ?>
+        </tbody>
+    </table>
+    </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
