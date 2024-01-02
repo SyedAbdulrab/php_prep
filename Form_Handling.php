@@ -32,8 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && !isset($_POST['delete_user'])) {
     $stmt->execute();
     $stmt->close();
 
+    $userData = "Name: $name, Age: $age\n";
+    file_put_contents('user_data.txt', $userData, FILE_APPEND | LOCK_EX);
+
     // we will close the db connection later as we want to display the users as well
-    //header("Location: /webESE/Form_Handling.php");
+    header("Location: /webESE/Form_Handling.php");
 
     // Fetch users from the database
 
